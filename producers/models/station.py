@@ -37,13 +37,13 @@ class Station(Producer):
         # replicas
         #
         #
-        topic_name = f"{station_name}" # TODO: Come up with a better topic name
+        topic_name = f"org.chicago.cta.station.arrivals.{station_name}" # TODO: Come up with a better topic name
         super().__init__(
             topic_name,
             key_schema=Station.key_schema,
             value_schema=Station.value_schema,
-            # TODO: num_partitions=???,
-            # TODO: num_replicas=???,
+            num_partitions=3,
+            num_replicas=1
         )
 
         self.station_id = int(station_id)
@@ -67,22 +67,25 @@ class Station(Producer):
            topic=self.topic_name,
            key={"timestamp": self.time_millis()},
            value={
-               #
-               #
-               # TODO: Configure this
-               #
-               #
+               "station_id": self.station_id,
+               "train_id": train.id,
+               "direction": direction,
+               "line": self.color.name,
+               "train_status": train.status.name,
+               "prev_status_id": prev_station_id,
+               "pre_direction": prev_direction
            },
         )
 
     def __str__(self):
-        return "Station | {:^5} | {:<30} | Direction A: | {:^5} | departing to {:<30} | Direction B: | {:^5} | departing to {:<30} | ".format(
-            self.station_id,
-            self.name,
-            self.a_train.train_id if self.a_train is not None else "---",
-            self.dir_a.name if self.dir_a is not None else "---",
-            self.b_train.train_id if self.b_train is not None else "---",
-            self.dir_b.name if self.dir_b is not None else "---",
+        return "Station | {:^5} | {:<30} | Direction A: | {:^5} | departing to {:<30} | Direction B: | {:^5} | " \
+               "departing to {:<30} | ".format(
+                self.station_id,
+                self.name,
+                self.a_train.train_id if self.a_train is not None else "---",
+                self.dir_a.name if self.dir_a is not None else "---",
+                self.b_train.train_id if self.b_train is not None else "---",
+                self.dir_b.name if self.dir_b is not None else "---",
         )
 
     def __repr__(self):
