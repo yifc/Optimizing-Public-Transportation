@@ -8,7 +8,7 @@ import urllib.parse
 
 import requests
 
-from models.producer import Producer
+from producers.models.producer import Producer
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class Weather(Producer):
         #
         #
         super().__init__(
-            topic_name="org.chicago.cta.weather",  # TODO: Come up with a better topic name
+            topic_name="org.chicago.cta.weather.v1",  # Comply with weather topic name in server
             key_schema=Weather.key_schema,
             value_schema=Weather.value_schema,
             num_partitions=3,

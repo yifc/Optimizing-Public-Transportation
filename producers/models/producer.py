@@ -9,10 +9,10 @@ from confluent_kafka.avro import AvroProducer
 logger = logging.getLogger(__name__)
 
 BROKER_URL = "PLAINTEXT://localhost:9092"
-SCHEMA_REGISTRY = "http://localhost:8081"
+SCHEMA_REGISTRY_URL = "http://localhost:8081"
 
 
-def check_exists(client, topic):
+def check_topic_exists(client, topic):
     topic_metadata = client.list_topics()
     topics = topic_metadata.topics
     return topic in topics
@@ -47,7 +47,7 @@ class Producer:
         #
         self.broker_properties = {
             "bootstrap.servers": BROKER_URL,
-            "schema.registry.url": SCHEMA_REGISTRY
+            "schema.registry.url": SCHEMA_REGISTRY_URL
         }
 
         # If the topic does not already exist, try to create it
@@ -71,7 +71,7 @@ class Producer:
         #
         #
         client = AdminClient({"bootstrap.servers": BROKER_URL})
-        if check_exists(client, self.topic_name):
+        if check_topic_exists(client, self.topic_name):
             logger.info(f"Topic {self.topic_name} already exists. Skip creating.")
             return
 

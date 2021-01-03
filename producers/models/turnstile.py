@@ -4,8 +4,8 @@ from pathlib import Path
 
 from confluent_kafka import avro
 
-from models.producer import Producer
-from models.turnstile_hardware import TurnstileHardware
+from producers.models.producer import Producer
+from producers.models.turnstile_hardware import TurnstileHardware
 
 
 logger = logging.getLogger(__name__)
@@ -17,9 +17,7 @@ class Turnstile(Producer):
     #
     # TODO: Define this value schema in `schemas/turnstile_value.json, then uncomment the below
     #
-    value_schema = avro.load(
-       f"{Path(__file__).parents[0]}/schemas/turnstile_value.json"
-    )
+    value_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/turnstile_value.json")
 
     def __init__(self, station):
         """Create the Turnstile"""
