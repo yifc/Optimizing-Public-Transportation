@@ -1,6 +1,7 @@
-"""Producer base-class providing common utilites and functionality"""
+"""Producer base-class providing common utilities and functionality"""
 import logging
 import time
+
 
 from confluent_kafka import avro
 from confluent_kafka.admin import AdminClient, NewTopic
@@ -41,13 +42,14 @@ class Producer:
 
         #
         #
-        # TODO: Configure the broker properties below. Make sure to reference the project README
-        #       and use the Host URL for Kafka and Schema Registry!
+        # TODO: Configure the broker properties below. Make sure to reference
+        #       the project README and use the Host URL for Kafka and Schema
+        #       Registry!
         #
         #
         self.broker_properties = {
             "bootstrap.servers": BROKER_URL,
-            "schema.registry.url": SCHEMA_REGISTRY_URL
+            "schema.registry.url": SCHEMA_REGISTRY_URL,
         }
 
         # If the topic does not already exist, try to create it
@@ -59,7 +61,7 @@ class Producer:
         self.producer = AvroProducer(
             self.broker_properties,
             default_key_schema=key_schema,
-            default_value_schema=value_schema
+            default_value_schema=value_schema,
         )
 
     def create_topic(self):
@@ -78,16 +80,15 @@ class Producer:
         logger.info(f"Creating topic {self.topic_name}")
         topic = NewTopic(self.topic_name, num_partitions=self.num_partitions, replication_factor=self.num_replicas)
         futures = client.create_topics([topic])
-        for topic, future in futures:
+        for topic, future in futures.items():
             try:
                 future.result()
                 print("topic created!")
             except Exception as e:
-                print(f"failed to create topic {self.topic_name}: {e}")
+                msg = f"failed to create topic {self.topic_name}: {e}"
+                logger.fatal(msg)
+                print(msg)
                 raise
-
-    def time_millis(self):
-        return int(round(time.time() * 1000))
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
@@ -96,9 +97,10 @@ class Producer:
         # TODO: Write cleanup code for the Producer here
         #
         #
-        if not self.producer:
+        if self.producer is None:
             return
-        logger.info("Flushing producer...")
+
+        logger.debug("Flushing producer...")
         self.producer.flush()
 
     def time_millis(self):

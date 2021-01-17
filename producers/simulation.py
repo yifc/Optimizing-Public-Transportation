@@ -24,8 +24,10 @@ class TimeSimulation:
     weekdays = IntEnum("weekdays", "mon tue wed thu fri sat sun", start=0)
     ten_min_frequency = datetime.timedelta(minutes=10)
 
-    def __init__(self, sleep_seconds=5, time_step=None, schedule=None):
+    def __init__(self, sleep_seconds=2, time_step=None, schedule=None):
         """Initializes the time simulation"""
+
+        print("------starting TimeSimulation--------")
         self.sleep_seconds = sleep_seconds
         self.time_step = time_step
         if self.time_step is None:
@@ -67,7 +69,7 @@ class TimeSimulation:
         weather = Weather(curr_time.month)
         try:
             while True:
-                logger.debug("simulation running: %s", curr_time.isoformat())
+                logger.info("simulation running: %s", curr_time.isoformat())
                 # Send weather on the top of the hour
                 if curr_time.minute == 0:
                     weather.run(curr_time.month)

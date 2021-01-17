@@ -4,9 +4,7 @@ import logging
 
 import requests
 
-
 logger = logging.getLogger(__name__)
-
 
 KAFKA_CONNECT_URL = "http://localhost:8083/connectors"
 CONNECTOR_NAME = "stations"
@@ -48,7 +46,7 @@ def configure_connector():
                "value.converter.schemas.enable": "false",
                "batch.max.rows": "500",
                # TODO
-               "connection.url": "jdbc:postgresql://localhost:5432/cta",
+               "connection.url": "jdbc:postgresql://postgres:5432/cta",
                # TODO
                "connection.user": "cta_admin",
                # TODO
@@ -60,7 +58,7 @@ def configure_connector():
                # TODO
                "incrementing.column.name": "stop_id",
                # TODO
-               "topic.prefix": "org.chicago.cta",
+               "topic.prefix": "org.chicago.cta.",
                # TODO
                "poll.interval.ms": "60000",
            }
